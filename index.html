@@ -1,0 +1,192 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network Krypto AI</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #080812;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+header {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #25233c;
+}
+
+.logo {
+  color: #a78bfa;
+  font-size: 21px;
+  font-weight: bold;
+}
+
+button {
+  background: #7545df;
+  color: white;
+  border: 0;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 4px;
+}
+
+button:hover { background: #956bff; }
+
+.hero {
+  text-align: center;
+  padding: 90px 15px;
+}
+
+.hero h1 {
+  font-size: 42px;
+}
+
+.hero span { color: #a78bfa; }
+
+.hero p {
+  color: #aaa;
+  font-size: 17px;
+}
+
+.panel {
+  max-width: 380px;
+  margin: auto;
+  padding: 25px;
+  background: #141424;
+  border: 1px solid #39305e;
+  border-radius: 14px;
+  text-align: center;
+}
+
+input {
+  width: 100%;
+  padding: 13px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: 1px solid #39305e;
+  background: #090916;
+  color: white;
+}
+
+#dashboard { display: none; }
+
+footer {
+  text-align: center;
+  color: #777;
+  padding: 30px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">NETWORK KRYPTO AI</div>
+  <button onclick="showAuth()">Sign In</button>
+</header>
+
+<section class="hero">
+  <h1>Meet <span>Network Krypto AI</span></h1>
+  <p>Your intelligent AI assistant for coding, Minecraft and Discord.</p>
+  <button onclick="showAuth()">Get Started</button>
+</section>
+
+<div class="panel" id="auth">
+  <h2 id="formTitle">Welcome Back</h2>
+  <input id="email" type="email" placeholder="Email address">
+  <input id="password" type="password" placeholder="Password">
+
+  <button onclick="login()">Login</button>
+  <button onclick="register()">Create Account</button>
+  <button onclick="googleLogin()">Google Login</button>
+
+  <p id="message"></p>
+</div>
+
+<div class="panel" id="dashboard">
+  <h2>Welcome to Network Krypto AI!</h2>
+  <p id="userEmail"></p>
+  <button onclick="logout()">Logout</button>
+</div>
+
+<footer>Network Krypto AI © 2026</footer>
+
+<script type="module">
+import { auth, googleProvider } from "./firebase.js";
+
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+
+window.login = async () => {
+  try {
+    await signInWithEmailAndPassword(
+      auth,
+      email.value,
+      password.value
+    );
+    message.textContent = "Login successful!";
+  } catch (e) {
+    message.textContent = e.message;
+  }
+};
+
+window.register = async () => {
+  try {
+    await createUserWithEmailAndPassword(
+      auth,
+      email.value,
+      password.value
+    );
+    message.textContent = "Account created!";
+  } catch (e) {
+    message.textContent = e.message;
+  }
+};
+
+window.googleLogin = async () => {
+  try {
+    await signInWithPopup(auth, googleProvider);
+  } catch (e) {
+    message.textContent = e.message;
+  }
+};
+
+window.logout = () => signOut(auth);
+
+window.showAuth = () => {
+  document.getElementById("auth").scrollIntoView({
+    behavior: "smooth"
+  });
+};
+
+onAuthStateChanged(auth, user => {
+  document.getElementById("auth").style.display =
+    user ? "none" : "block";
+
+  document.getElementById("dashboard").style.display =
+    user ? "block" : "none";
+
+  if (user) {
+    document.getElementById("userEmail").textContent =
+      user.email;
+  }
+});
+</script>
+
+</body>
+</html>
